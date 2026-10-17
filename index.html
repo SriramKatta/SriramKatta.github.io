@@ -1,675 +1,366 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sriram Katta — GPU Computing & HPC</title>
+  <title>Sriram Katta</title>
   <meta name="description" content="Sriram Katta — GPU computing and high-performance scientific computing. CUDA, HIP, C++, CFD. NHR@FAU, Erlangen.">
-  <meta property="og:title" content="Sriram Katta — GPU Computing & HPC">
-  <meta property="og:description" content="GPU computing and high-performance scientific computing. CUDA, HIP, C++, CFD.">
+  <meta name="author" content="Sriram Katta">
+  <meta property="og:title" content="Sriram Katta">
+  <meta property="og:description" content="GPU computing and high-performance scientific computing.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://sriramkatta.github.io/">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230072ec'/%3E%3Ctext x='50' y='66' font-size='44' font-family='Georgia,serif' fill='white' text-anchor='middle'%3ESK%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%B1%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
-    // Set theme before paint to avoid flash
+    // Apply saved theme before first paint to avoid a flash
     (function () {
       var saved = localStorage.getItem('theme');
-      var theme = saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      var theme = saved || 'light';
       document.documentElement.dataset.theme = theme;
     })();
   </script>
   <style>
     :root {
       --bg: #ffffff;
-      --bg-soft: #f7f8fa;
-      --card: #ffffff;
-      --border: #e6e9f0;
-      --text: #1a2233;
-      --muted: #667085;
-      --accent: #0072ec;
-      --accent-soft: rgba(0, 114, 236, 0.09);
-      --accent2: #7c3aed;
-      --pink: #ec4899;
-      --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.07);
-      --shadow-lg: 0 14px 40px rgba(16, 24, 40, 0.12);
-      --nav-bg: rgba(255, 255, 255, 0.82);
+      --bg-soft: #f6f8fa;
+      --border: #e8e8e8;
+      --text: #2b3137;
+      --muted: #6a737d;
+      --accent: #0969da;
       color-scheme: light;
     }
     [data-theme="dark"] {
-      --bg: #131722;
-      --bg-soft: #171c2a;
-      --card: #1a2030;
-      --border: #262d40;
-      --text: #e9edf4;
-      --muted: #98a2b3;
-      --accent: #5ba3ff;
-      --accent-soft: rgba(91, 163, 255, 0.12);
-      --accent2: #a78bfa;
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
-      --shadow-lg: 0 14px 40px rgba(0, 0, 0, 0.45);
-      --nav-bg: rgba(19, 23, 34, 0.82);
+      --bg: #17181c;
+      --bg-soft: #1f2025;
+      --border: #2e3035;
+      --text: #d9dde3;
+      --muted: #9199a1;
+      --accent: #6ca9f0;
       color-scheme: dark;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.65;
+      font-size: 15.5px;
+      line-height: 1.7;
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-      transition: background 0.3s ease, color 0.3s ease;
     }
-    ::selection { background: var(--accent-soft); }
-    a { color: inherit; text-decoration: none; }
-    .mono { font-family: 'JetBrains Mono', monospace; }
-    .serif { font-family: 'Source Serif 4', Georgia, serif; }
-    .container { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+    h1, h2, h3, .serif {
+      font-family: 'Roboto Slab', Georgia, serif;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 920px; margin: 0 auto; padding: 0 24px; }
 
-    /* ---------- Nav (al-folio style: brand left, links right, theme toggle) ---------- */
+    /* ---------- Nav ---------- */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: var(--nav-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
     }
+    [data-theme="dark"] nav { background: rgba(23, 24, 28, 0.85); }
     .nav-inner {
-      max-width: 980px; margin: 0 auto; padding: 0 24px;
-      height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      max-width: 920px; margin: 0 auto; padding: 0 24px;
+      height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
     }
-    .nav-brand { font-family: 'Source Serif 4', Georgia, serif; font-weight: 700; font-size: 19px; letter-spacing: -0.01em; }
-    .nav-brand span { color: var(--accent); }
-    .nav-right { display: flex; align-items: center; gap: 2px; }
-    .nav-links { display: flex; align-items: center; gap: 2px; }
+    .nav-brand { font-family: 'Roboto Slab', Georgia, serif; font-size: 17px; font-weight: 600; color: var(--text); }
+    .nav-brand:hover { text-decoration: none; }
+    .nav-links { display: flex; align-items: center; gap: 4px; }
     .nav-links a {
-      font-size: 13.5px; font-weight: 500; color: var(--muted);
-      padding: 7px 11px; border-radius: 8px; transition: color 0.2s, background 0.2s;
+      color: var(--muted); font-size: 14px; padding: 6px 10px; border-radius: 6px;
     }
-    .nav-links a:hover { color: var(--accent); background: var(--accent-soft); }
+    .nav-links a:hover { color: var(--text); background: var(--bg-soft); text-decoration: none; }
     .theme-btn {
       display: flex; align-items: center; justify-content: center;
-      width: 34px; height: 34px; border-radius: 9px; margin-left: 6px;
-      background: transparent; border: 1px solid var(--border); color: var(--muted);
-      cursor: pointer; transition: color 0.2s, border-color 0.2s, transform 0.2s;
+      width: 32px; height: 32px; border: none; border-radius: 6px;
+      background: transparent; color: var(--muted); cursor: pointer;
     }
-    .theme-btn:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-1px); }
+    .theme-btn:hover { color: var(--text); background: var(--bg-soft); }
     .theme-btn svg { width: 16px; height: 16px; }
     [data-theme="dark"] .icon-sun { display: block; } [data-theme="dark"] .icon-moon { display: none; }
     [data-theme="light"] .icon-sun { display: none; } [data-theme="light"] .icon-moon { display: block; }
-    .menu-btn { display: none; background: none; border: none; color: var(--text); cursor: pointer; padding: 8px; }
 
-    /* ---------- Hero ---------- */
-    .hero { padding: 150px 0 90px; position: relative; }
-    .hero-grid { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 56px; align-items: center; }
-    .greeting { font-size: 17px; color: var(--muted); margin-bottom: 10px; }
-    .greeting em { font-style: normal; }
-    .hero-name {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-size: clamp(40px, 6.5vw, 62px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.08;
-      margin-bottom: 14px;
-    }
-    .hero-tagline {
-      font-family: 'Source Serif 4', Georgia, serif; font-style: italic;
-      font-size: clamp(17px, 2.4vw, 21px); color: var(--accent); min-height: 1.7em; margin-bottom: 10px;
-    }
-    .hero-tagline .caret { display: inline-block; width: 9px; height: 1.05em; background: var(--accent); vertical-align: -0.15em; margin-left: 2px; animation: blink 1s steps(1) infinite; }
-    @keyframes blink { 50% { opacity: 0; } }
-    .hero-affil { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--muted); margin-bottom: 22px; }
-    .hero-affil a { color: var(--accent); }
-    .hero-affil .sep { margin: 0 7px; opacity: 0.5; }
-    .hero-bio { color: var(--muted); font-size: 15.5px; margin-bottom: 28px; max-width: 560px; }
-    .hero-bio strong { color: var(--text); font-weight: 600; }
-    .social-row { display: flex; gap: 10px; flex-wrap: wrap; }
-    .social-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 9px 16px; border-radius: 10px; font-size: 13.5px; font-weight: 500;
-      background: var(--bg-soft); border: 1px solid var(--border); color: var(--muted);
-      transition: color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-    }
-    .social-btn:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
-    .social-btn svg { width: 15px; height: 15px; }
+    main { padding: 96px 0 40px; }
 
-    .photo-wrap { position: relative; justify-self: center; }
-    .photo-wrap::before, .photo-wrap::after {
-      content: ''; position: absolute; border-radius: 50%; filter: blur(55px); opacity: 0.35; z-index: 0;
+    /* ---------- Header: profile + bio ---------- */
+    .header-grid {
+      display: grid; grid-template-columns: 1fr 1.7fr; gap: 48px; align-items: start;
+      margin-bottom: 72px;
     }
-    .photo-wrap::before { width: 200px; height: 200px; background: var(--accent); top: -34px; right: -34px; }
-    .photo-wrap::after { width: 190px; height: 190px; background: var(--accent2); bottom: -30px; left: -38px; }
-    .photo {
-      position: relative; z-index: 1;
-      width: min(300px, 68vw); aspect-ratio: 4 / 5; object-fit: cover;
-      border-radius: 18px; border: 1px solid var(--border);
-      box-shadow: var(--shadow-lg);
-      transform: rotate(2deg); transition: transform 0.4s cubic-bezier(0.2, 0.65, 0.3, 1);
+    .profile { text-align: center; }
+    .profile img {
+      width: min(220px, 70vw); aspect-ratio: 1 / 1; object-fit: cover;
+      border-radius: 50%; margin-bottom: 18px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
     }
-    .photo-wrap:hover .photo { transform: rotate(0deg) scale(1.015); }
+    .profile h1 { font-size: 26px; font-weight: 600; margin-bottom: 4px; }
+    .profile .role { color: var(--muted); font-size: 14.5px; margin-bottom: 14px; }
+    .social-row { display: flex; justify-content: center; gap: 8px; }
+    .social-row a {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; border-radius: 8px; color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .social-row a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+    .social-row svg { width: 16px; height: 16px; }
+
+    .bio h2 { font-size: 22px; margin-bottom: 12px; }
+    .bio p { color: var(--muted); margin-bottom: 14px; }
+    .bio p strong { color: var(--text); font-weight: 600; }
+
+    /* ---------- News ---------- */
+    .bio .news-title { margin-top: 30px; }
+    .news { width: 100%; border-collapse: collapse; }
+    .news td { padding: 7px 0; vertical-align: top; color: var(--muted); font-size: 14.5px; }
+    .news td.date {
+      white-space: nowrap; font-weight: 600; color: var(--text);
+      padding-right: 18px; font-size: 14px; font-variant-numeric: tabular-nums;
+    }
 
     /* ---------- Sections ---------- */
-    section { padding: 76px 0; scroll-margin-top: 66px; }
-    .alt-bg { background: var(--bg-soft); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .sec-head { margin-bottom: 36px; }
-    .sec-label { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); margin-bottom: 8px; letter-spacing: 0.05em; }
-    .sec-title {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-size: clamp(26px, 4vw, 34px); font-weight: 700; letter-spacing: -0.015em;
+    section { margin-bottom: 64px; scroll-margin-top: 76px; }
+    .sec-head {
+      font-size: 24px; margin-bottom: 22px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
     }
-    .sec-sub { color: var(--muted); margin-top: 8px; max-width: 620px; font-size: 15px; }
+    .sec-head small { font-family: inherit; color: var(--muted); font-size: 14px; font-weight: 400; }
 
-    /* ---------- About ---------- */
-    .about-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 44px; align-items: start; }
-    .about-text p { color: var(--muted); margin-bottom: 15px; font-size: 15.5px; }
-    .about-text strong { color: var(--text); font-weight: 600; }
-    .about-text a { color: var(--accent); border-bottom: 1px solid transparent; }
-    .about-text a:hover { border-bottom-color: var(--accent); }
-    .fact-card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px;
-      font-family: 'JetBrains Mono', monospace; font-size: 12.5px; box-shadow: var(--shadow-sm);
+    /* ---------- Projects ---------- */
+    .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 36px; }
+    .proj {
+      padding: 10px 0; border-bottom: 1px dashed var(--border);
     }
-    .fact-card .line { display: flex; justify-content: space-between; gap: 14px; padding: 6px 0; border-bottom: 1px dashed var(--border); }
-    .fact-card .line:last-child { border-bottom: none; }
-    .fact-card .k { color: var(--muted); }
-    .fact-card .v { color: var(--text); text-align: right; }
+    .proj-top { display: flex; align-items: baseline; gap: 10px; }
+    .proj-name { font-weight: 600; color: var(--text); font-size: 15px; }
+    .proj-name:hover { color: var(--accent); }
+    .proj-lang { margin-left: auto; font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+    .proj-lang::before {
+      content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      margin-right: 5px; background: var(--dot, #999);
+    }
+    .proj-desc { color: var(--muted); font-size: 13.8px; line-height: 1.55; }
 
-    /* ---------- News (al-folio: compact dated list) ---------- */
-    .news-list { max-width: 720px; }
-    .news-item {
-      display: flex; gap: 18px; align-items: baseline;
-      padding: 11px 0; border-bottom: 1px dashed var(--border);
-    }
-    .news-item:last-child { border-bottom: none; }
-    .news-date { font-weight: 600; font-size: 13.5px; color: var(--text); white-space: nowrap; min-width: 86px; font-variant-numeric: tabular-nums; }
-    .news-text { color: var(--muted); font-size: 14.5px; }
-    .news-text a { color: var(--accent); }
-    .news-text .tag {
-      font-family: 'JetBrains Mono', monospace; font-size: 10.5px; padding: 2px 8px; border-radius: 999px;
-      background: var(--accent-soft); color: var(--accent); margin-left: 7px; white-space: nowrap;
-    }
-
-    /* ---------- Projects (al-folio style cards) ---------- */
-    .proj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px; }
-    .proj-card {
-      display: flex; flex-direction: column; gap: 11px;
-      background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px;
-      box-shadow: var(--shadow-sm);
-      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
-    }
-    .proj-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--accent); }
-    .proj-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .proj-name { font-family: 'Source Serif 4', Georgia, serif; font-size: 17.5px; font-weight: 600; word-break: break-all; }
-    .proj-card:hover .proj-name { color: var(--accent); }
-    .featured-badge {
-      flex-shrink: 0; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600;
-      color: var(--accent); padding: 3px 9px; border-radius: 999px;
-      background: var(--accent-soft); letter-spacing: 0.04em;
-    }
-    .proj-desc { color: var(--muted); font-size: 13.8px; flex-grow: 1; }
-    .proj-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .proj-tags span {
-      font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted);
-      background: var(--bg-soft); border: 1px solid var(--border); border-radius: 6px; padding: 3px 8px;
-    }
-    .proj-meta {
-      display: flex; align-items: center; gap: 14px; padding-top: 11px; border-top: 1px dashed var(--border);
-      font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--muted);
-    }
-    .proj-meta .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: 0; }
-    .proj-meta a { margin-left: auto; color: var(--accent); }
-    .proj-meta a:hover { text-decoration: underline; }
-
-    /* ---------- Skills ---------- */
-    .skill-group { margin-bottom: 28px; }
-    .skill-group:last-child { margin-bottom: 0; }
-    .skill-cat { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--accent); margin-bottom: 12px; }
-    .skill-cat::before { content: '## '; color: var(--muted); }
-    .chips { display: flex; flex-wrap: wrap; gap: 9px; }
-    .chip {
-      font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 500;
-      padding: 8px 16px; border-radius: 9px;
-      background: var(--card); border: 1px solid var(--border); color: var(--text); box-shadow: var(--shadow-sm);
-      transition: border-color 0.2s, transform 0.2s, color 0.2s;
-    }
-    .chip:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
-
-    /* ---------- Experience / Education (CV style) ---------- */
-    .xp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
-    .xp-item { position: relative; padding: 0 0 28px 24px; border-left: 2px solid var(--border); }
-    .xp-item:last-child { padding-bottom: 0; }
-    .xp-item::before {
-      content: ''; position: absolute; left: -6.5px; top: 6px; width: 11px; height: 11px; border-radius: 50%;
-      background: var(--bg); border: 2.5px solid var(--accent);
-    }
-    .xp-period { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--accent); margin-bottom: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
-    .xp-role { font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; font-weight: 600; margin-bottom: 2px; }
-    .xp-org { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
-    .xp-org a { color: var(--accent); }
-    .xp-item ul { list-style: none; }
-    .xp-item li { color: var(--muted); font-size: 13.8px; padding-left: 15px; position: relative; margin-bottom: 4px; }
-    .xp-item li::before { content: '›'; position: absolute; left: 0; color: var(--accent); }
-
-    /* ---------- Contact ---------- */
-    .contact-wrap { text-align: center; max-width: 600px; margin: 0 auto; }
-    .contact-cta { font-size: 16.5px; }
-    .contact-btn {
-      display: inline-flex; align-items: center; gap: 9px; margin-top: 26px;
-      padding: 12px 26px; border-radius: 11px; font-size: 14.5px; font-weight: 600;
-      background: var(--accent); color: #fff;
-      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
-    }
-    [data-theme="dark"] .contact-btn { color: #0d1524; }
-    .contact-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); opacity: 0.94; }
-    .contact-btn svg { width: 16px; height: 16px; }
+    /* ---------- CV ---------- */
+    .cv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .cv-col h3 { font-size: 16px; margin-bottom: 14px; color: var(--text); }
+    .cv-item { margin-bottom: 18px; }
+    .cv-item .period { font-size: 12px; color: var(--accent); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+    .cv-item .what { font-weight: 600; font-size: 14.5px; margin-top: 2px; }
+    .cv-item .where { color: var(--muted); font-size: 13.8px; }
 
     /* ---------- Footer ---------- */
-    footer { border-top: 1px solid var(--border); padding: 30px 0; }
+    footer { border-top: 1px solid var(--border); padding: 24px 0; margin-top: 24px; }
     .footer-inner {
-      display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
-      font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted);
-    }
-
-    /* ---------- Reveal ---------- */
-    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s cubic-bezier(0.2, 0.65, 0.3, 1), transform 0.7s cubic-bezier(0.2, 0.65, 0.3, 1); }
-    .reveal.visible { opacity: 1; transform: none; }
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      .reveal { opacity: 1; transform: none; transition: none; }
-      .hero-tagline .caret { animation: none; }
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px;
+      color: var(--muted); font-size: 12.5px;
     }
 
     /* ---------- Responsive ---------- */
-    @media (max-width: 900px) {
-      .hero-grid { grid-template-columns: 1fr; gap: 44px; }
-      .photo-wrap { order: -1; }
-      .about-grid, .xp-grid { grid-template-columns: 1fr; gap: 36px; }
-    }
-    @media (max-width: 720px) {
-      .hero { padding: 120px 0 70px; }
-      section { padding: 62px 0; }
-      .menu-btn { display: block; }
-      .nav-links {
-        display: none; position: absolute; top: 60px; left: 0; right: 0;
-        flex-direction: column; align-items: stretch; gap: 2px;
-        background: var(--nav-bg); backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--border); padding: 12px 24px 16px;
-      }
-      .nav-links.open { display: flex; }
-      .nav-links a { padding: 11px; }
+    @media (max-width: 800px) {
+      .header-grid, .proj-grid, .cv-grid { grid-template-columns: 1fr; gap: 36px; }
+      .profile { margin-bottom: 0; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ======= Nav ======= -->
   <nav>
     <div class="nav-inner">
-      <a class="nav-brand" href="#top">Sriram <span>Katta</span></a>
-      <div class="nav-right">
-        <div class="nav-links" id="navLinks">
-          <a href="#about">about</a>
-          <a href="#news">news</a>
-          <a href="#projects">projects</a>
-          <a href="#skills">skills</a>
-          <a href="#experience">cv</a>
-          <a href="#contact">contact</a>
-        </div>
+      <a class="nav-brand" href="#">Sriram Katta</a>
+      <div class="nav-links">
+        <a href="#news">News</a>
+        <a href="#projects">Projects</a>
+        <a href="#cv">CV</a>
         <button class="theme-btn" id="themeBtn" aria-label="Toggle dark / light theme" title="Toggle theme">
           <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
-        <button class="menu-btn" id="menuBtn" aria-label="Toggle navigation menu">
-          <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
         </button>
       </div>
     </div>
   </nav>
 
-  <!-- ======= Hero ======= -->
-  <header class="hero" id="top">
-    <div class="container hero-grid">
-      <div>
-        <div class="greeting"><em>Hello! I'm</em></div>
-        <h1 class="hero-name">Sriram Katta</h1>
-        <div class="hero-tagline"><span id="typed"></span><span class="caret"></span></div>
-        <div class="hero-affil">
-          <a href="https://www.nhr.fau.de/" target="_blank" rel="noopener">NHR@FAU</a>
-          <span class="sep">·</span> Erlangen, Germany
-          <span class="sep">·</span> HPC &amp; GPU Computing
-        </div>
-        <p class="hero-bio">
-          I accelerate scientific computing on GPUs — writing portable, high-performance code across
-          <strong>CUDA</strong> and <strong>HIP</strong>: from lattice Boltzmann fluid solvers and SPH to
-          sparse linear algebra and the parallel tooling around them.
-        </p>
-        <div class="social-row">
-          <!-- EDIT: replace email/LinkedIn with your real ones -->
-          <a class="social-btn" href="mailto:your.email@example.com">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
-            Email
-          </a>
-          <a class="social-btn" href="https://github.com/SriramKatta" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.91c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.36-3.87-1.36-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.09 1.76 1.18 1.76 1.18 1.03 1.76 2.7 1.25 3.35.96a2.56 2.56 0 0 1 .75-1.6c-2.62-.3-5.37-1.31-5.37-5.83a4.56 4.56 0 0 1 1.22-3.17 4.24 4.24 0 0 1 .12-3.13s1-.32 3.28 1.21a11.35 11.35 0 0 1 6 0c2.28-1.53 3.28-1.21 3.28-1.21a4.24 4.24 0 0 1 .12 3.13 4.55 4.55 0 0 1 1.21 3.17c0 4.53-2.75 5.53-5.38 5.82a2.86 2.86 0 0 1 .83 2.22v3.29c0 .31.2.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg>
-            GitHub
-          </a>
-          <a class="social-btn" href="https://www.linkedin.com/" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.55V9h3.57v11.45Z"/></svg>
-            LinkedIn
-          </a>
-          <a class="social-btn" href="#experience">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
-            CV
-          </a>
-        </div>
-      </div>
-      <div class="photo-wrap">
+  <main class="container">
+
+    <!-- ======= Profile + bio + news ======= -->
+    <div class="header-grid">
+      <div class="profile">
         <!-- REPLACE: drop profile.jpg next to index.html and it will automatically be used -->
-        <img class="photo" src="profile.jpg" alt="Profile photo of Sriram Katta"
-             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 400 500\'%3E%3Cdefs%3E%3ClinearGradient id=\'g\' x1=\'0\' y1=\'0\' x2=\'1\' y2=\'1\'%3E%3Cstop offset=\'0\' stop-color=\'%230072ec\'/%3E%3Cstop offset=\'0.55\' stop-color=\'%237c3aed\'/%3E%3Cstop offset=\'1\' stop-color=\'%23ec4899\'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=\'400\' height=\'500\' fill=\'url(%23g)\'/%3E%3Ctext x=\'200\' y=\'275\' font-family=\'Georgia,serif\' font-size=\'150\' fill=\'rgba(255,255,255,0.92)\' text-anchor=\'middle\'%3ESK%3C/text%3E%3Ctext x=\'200\' y=\'330\' font-family=\'monospace\' font-size=\'16\' fill=\'rgba(255,255,255,0.7)\' text-anchor=\'middle\'%3Eadd profile.jpg%3C/text%3E%3C/svg%3E'; this.onerror=null;">
-      </div>
-    </div>
-  </header>
-
-  <!-- ======= About ======= -->
-  <section id="about" class="alt-bg">
-    <div class="container">
-      <div class="sec-head reveal">
-        <div class="sec-label"># about</div>
-        <h2 class="sec-title">About me</h2>
-      </div>
-      <div class="about-grid">
-        <div class="about-text reveal">
-          <!-- EDIT: rewrite this bio in your own words -->
-          <p>
-            I work on <strong>high-performance scientific computing</strong> at
-            <a href="https://www.nhr.fau.de/" target="_blank" rel="noopener">NHR@FAU</a> (National
-            High-Performance Computing, Friedrich-Alexander-Universität Erlangen-Nürnberg), helping
-            researchers get simulation codes running fast — and running portably — on modern GPU hardware.
-          </p>
-          <p>
-            My work sits at the intersection of <strong>GPGPU programming and computational physics</strong>:
-            lattice Boltzmann and smoothed-particle hydrodynamics solvers, iterative sparse linear solvers
-            like conjugate gradient, multi-GPU benchmarking, and the IO/tooling glue (MPI readers, HDF5)
-            that holds large simulations together.
-          </p>
-          <p>
-            I care about writing GPU code that doesn't get locked to one vendor — which is why I built
-            a CUDA/HIP abstraction runtime so the same C++ powers both ecosystems.
-          </p>
-        </div>
-        <div class="fact-card reveal" aria-label="Quick facts">
-          <div class="line"><span class="k">location</span><span class="v">Erlangen, DE</span></div>
-          <div class="line"><span class="k">role</span><span class="v">HPC · GPU</span></div>
-          <div class="line"><span class="k">affiliation</span><span class="v">NHR@FAU</span></div>
-          <div class="line"><span class="k">languages</span><span class="v">C++ · CUDA · Py</span></div>
-          <div class="line"><span class="k">github-since</span><span class="v">2021</span></div>
-          <div class="line"><span class="k">status</span><span class="v">open to collab</span></div>
+        <img src="profile.jpg" alt="Profile photo of Sriram Katta"
+             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 400 400\'%3E%3Crect width=\'400\' height=\'400\' fill=\'%230969da\'/%3E%3Ctext x=\'200\' y=\'245\' font-family=\'Georgia,serif\' font-size=\'130\' fill=\'white\' text-anchor=\'middle\'%3ESK%3C/text%3E%3C/svg%3E'; this.onerror=null;">
+        <h1>Sriram Katta</h1>
+        <p class="role">HPC / GPU Computing Engineer</p>
+        <p class="role"><a href="https://www.nhr.fau.de/" target="_blank" rel="noopener">NHR@FAU</a> · Erlangen, Germany</p>
+        <div class="social-row">
+          <!-- EDIT: replace with your real email / LinkedIn -->
+          <a href="mailto:your.email@example.com" aria-label="Email" title="Email">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+          </a>
+          <a href="https://github.com/SriramKatta" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.91c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.36-3.87-1.36-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.09 1.76 1.18 1.76 1.18 1.03 1.76 2.7 1.25 3.35.96a2.56 2.56 0 0 1 .75-1.6c-2.62-.3-5.37-1.31-5.37-5.83a4.56 4.56 0 0 1 1.22-3.17 4.24 4.24 0 0 1 .12-3.13s1-.32 3.28 1.21a11.35 11.35 0 0 1 6 0c2.28-1.53 3.28-1.21 3.28-1.21a4.24 4.24 0 0 1 .12 3.13 4.55 4.55 0 0 1 1.21 3.17c0 4.53-2.75 5.53-5.38 5.82a2.86 2.86 0 0 1 .83 2.22v3.29c0 .31.2.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.55V9h3.57v11.45Z"/></svg>
+          </a>
+          <a href="#" aria-label="CV" title="CV">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+          </a>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ======= News ======= -->
-  <section id="news">
-    <div class="container">
-      <div class="sec-head reveal">
-        <div class="sec-label"># news</div>
-        <h2 class="sec-title">News</h2>
-      </div>
-      <div class="news-list">
-        <!-- EDIT: keep adding dated entries here, newest first -->
-        <div class="news-item reveal">
-          <span class="news-date">Oct 2026</span>
-          <span class="news-text">Launched this website <span class="tag">site</span></span>
-        </div>
-        <div class="news-item reveal">
-          <span class="news-date">Aug 2026</span>
-          <span class="news-text">New developments in <a href="https://github.com/SriramKatta/Multiphase_LBM" target="_blank" rel="noopener">Multiphase_LBM</a>, my multiphase lattice Boltzmann solver <span class="tag">cfd</span></span>
-        </div>
-        <div class="news-item reveal">
-          <span class="news-date">Jun 2026</span>
-          <span class="news-text">Released <a href="https://github.com/SriramKatta/GCXX" target="_blank" rel="noopener">GCXX</a> — a backend-agnostic CUDA/HIP GPU runtime abstraction in modern C++ <span class="tag">release</span></span>
-        </div>
-        <div class="news-item reveal">
-          <span class="news-date">Feb 2026</span>
-          <span class="news-text"><a href="https://github.com/SriramKatta/CG_Solver_GPU" target="_blank" rel="noopener">CG_Solver_GPU</a>: GPU-accelerated conjugate gradient solver for large sparse systems <span class="tag">hpc</span></span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ======= Projects ======= -->
-  <section id="projects" class="alt-bg">
-    <div class="container">
-      <div class="sec-head reveal">
-        <div class="sec-label"># projects</div>
-        <h2 class="sec-title">Projects</h2>
-        <p class="sec-sub">Straight from my GitHub — simulations, solvers, and the tooling around them.</p>
-      </div>
-      <div class="proj-grid">
-
-        <a class="proj-card reveal" href="https://github.com/SriramKatta/GCXX" target="_blank" rel="noopener">
-          <div class="proj-top"><span class="proj-name">GCXX</span><span class="featured-badge">featured</span></div>
-          <p class="proj-desc">A lightweight, backend-agnostic C++ GPU runtime abstraction library with support for CUDA and HIP. Write portable, high-performance GPU code using a unified interface.</p>
-          <div class="proj-tags"><span>C++</span><span>CUDA</span><span>HIP</span><span>Portability</span></div>
-          <div class="proj-meta"><span><span class="dot" style="background:#f34b7d"></span>C++</span><a href="https://github.com/SriramKatta/GCXX">→ repo</a></div>
-        </a>
-
-        <a class="proj-card reveal" href="https://github.com/SriramKatta/Multiphase_LBM" target="_blank" rel="noopener">
-          <div class="proj-top"><span class="proj-name">Multiphase_LBM</span><span class="featured-badge">★ 3</span></div>
-          <p class="proj-desc">Multiphase lattice Boltzmann method solver for simulating interacting fluid phases — mesoscopic CFD on modern hardware.</p>
-          <div class="proj-tags"><span>Python</span><span>CFD</span><span>LBM</span><span>Multiphase</span></div>
-          <div class="proj-meta"><span><span class="dot" style="background:#3572A5"></span>Python</span><span>★ 3</span><a href="https://github.com/SriramKatta/Multiphase_LBM">→ repo</a></div>
-        </a>
-
-        <a class="proj-card reveal" href="https://github.com/SriramKatta/CG_Solver_GPU" target="_blank" rel="noopener">
-          <div class="proj-top"><span class="proj-name">CG_Solver_GPU</span></div>
-          <p class="proj-desc">GPU-accelerated conjugate gradient iterative solver for large, sparse linear systems — the workhorse behind implicit simulations.</p>
-          <div class="proj-tags"><span>CUDA</span><span>Sparse LA</span><span>Iterative Solvers</span></div>
-          <div class="proj-meta"><span><span class="dot" style="background:#3A4E3A"></span>Cuda</span><a href="https://github.com/SriramKatta/CG_Solver_GPU">→ repo</a></div>
-        </a>
-
-        <a class="proj-card reveal" href="https://github.com/SriramKatta/Multi_GPU_benchmarks" target="_blank" rel="noopener">
-          <div class="proj-top"><span class="proj-name">Multi_GPU_benchmarks</span></div>
-          <p class="proj-desc">Benchmarking suite for multi-GPU systems — measuring scaling, bandwidth, and kernel performance across devices.</p>
-          <div class="proj-tags"><span>CUDA</span><span>Multi-GPU</span><span>Benchmarks</span></div>
-          <div class="proj-meta"><span><span class="dot" style="background:#3A4E3A"></span>Cuda</span><a href="https://github.com/SriramKatta/Multi_GPU_benchmarks">→ repo</a></div>
-        </a>
-
-        <a class="proj-card reveal" href="https://github.com/SriramKatta/SPH_CUDA_BASIC" target="_blank" rel="noopener">
-          <div class="proj-top"><span class="proj-name">SPH_CUDA_BASIC</span></div>
-          <p class="proj-desc">Smoothed-particle hydrodynamics implemented on the GPU — meshfree, particle-based fluid simulation in CUDA.</p>
-          <div class="proj-tags"><span>CUDA</span><span>SPH</span><span>Particles</span></div>
-          <div class="proj-meta"><span><span class="dot" style="background:#3A4E3A"></span>Cuda</span><a href="https://github.com/SriramKatta/SPH_CUDA_BASIC">→ repo</a></div>
-        </a>
-
-        <a class="proj-card reveal" href="https://github.com/SriramKatta/Partcile_simulation_CUDA" target="_blank" rel="noopener">
-          <div class="proj-top"><span class="proj-name">Partcile_simulation_CUDA</span></div>
-          <p class="proj-desc">General-purpose GPU particle simulation — the N-body playground that started it all.</p>
-          <div class="proj-tags"><span>C++</span><span>CUDA</span><span>N-body</span></div>
-          <div class="proj-meta"><span><span class="dot" style="background:#f34b7d"></span>C++</span><a href="https://github.com/SriramKatta/Partcile_simulation_CUDA">→ repo</a></div>
-        </a>
-
-        <a class="proj-card reveal" href="https://github.com/SriramKatta/Steadystate-Heat-transfer" target="_blank" rel="noopener">
-          <div class="proj-top"><span class="proj-name">Steadystate-Heat-transfer</span></div>
-          <p class="proj-desc">Steady-state heat conduction solver — classical numerical methods for thermal problems.</p>
-          <div class="proj-tags"><span>C++</span><span>Numerics</span><span>Heat Transfer</span></div>
-          <div class="proj-meta"><span><span class="dot" style="background:#f34b7d"></span>C++</span><a href="https://github.com/SriramKatta/Steadystate-Heat-transfer">→ repo</a></div>
-        </a>
-
-        <a class="proj-card reveal" href="https://github.com/SriramKatta/cosmoHDF5" target="_blank" rel="noopener">
-          <div class="proj-top"><span class="proj-name">cosmoHDF5</span></div>
-          <p class="proj-desc">HDF5 tooling for cosmological simulation data — efficient storage and analysis of huge datasets.</p>
-          <div class="proj-tags"><span>C++</span><span>HDF5</span><span>Cosmology</span></div>
-          <div class="proj-meta"><span><span class="dot" style="background:#f34b7d"></span>C++</span><a href="https://github.com/SriramKatta/cosmoHDF5">→ repo</a></div>
-        </a>
-
-        <a class="proj-card reveal" href="https://github.com/SriramKatta/mmio-mpi-reader" target="_blank" rel="noopener">
-          <div class="proj-top"><span class="proj-name">mmio-mpi-reader</span></div>
-          <p class="proj-desc">Distributed Matrix Market file reader in C with MPI — parallel IO for sparse matrices.</p>
-          <div class="proj-tags"><span>C</span><span>MPI</span><span>Parallel IO</span></div>
-          <div class="proj-meta"><span><span class="dot" style="background:#555"></span>C</span><a href="https://github.com/SriramKatta/mmio-mpi-reader">→ repo</a></div>
-        </a>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ======= Skills ======= -->
-  <section id="skills">
-    <div class="container">
-      <div class="sec-head reveal">
-        <div class="sec-label"># skills</div>
-        <h2 class="sec-title">Toolchain</h2>
-        <p class="sec-sub">What I reach for when something needs to go fast.</p>
-      </div>
-      <div class="skill-group reveal">
-        <div class="skill-cat">gpu-computing</div>
-        <div class="chips"><span class="chip">CUDA</span><span class="chip">HIP</span><span class="chip">Kernel Optimization</span><span class="chip">Multi-GPU</span><span class="chip">Profiler Tools</span></div>
-      </div>
-      <div class="skill-group reveal">
-        <div class="skill-cat">languages</div>
-        <div class="chips"><span class="chip">C++</span><span class="chip">C</span><span class="chip">Python</span></div>
-      </div>
-      <div class="skill-group reveal">
-        <div class="skill-cat">hpc-ecosystem</div>
-        <div class="chips"><span class="chip">MPI</span><span class="chip">HDF5</span><span class="chip">Batch Systems</span><span class="chip">Linux</span><span class="chip">Git</span></div>
-      </div>
-      <div class="skill-group reveal">
-        <div class="skill-cat">scientific-computing</div>
-        <div class="chips"><span class="chip">Lattice Boltzmann</span><span class="chip">SPH</span><span class="chip">Sparse Linear Solvers</span><span class="chip">CFD</span><span class="chip">Numerical Methods</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ======= Experience & Education ======= -->
-  <section id="experience" class="alt-bg">
-    <div class="container">
-      <div class="sec-head reveal">
-        <div class="sec-label"># timeline</div>
-        <h2 class="sec-title">Experience <span style="color:var(--muted); font-weight:500">&amp;</span> Education</h2>
-        <p class="sec-sub">Placeholders for now — fill in the blanks.</p>
-      </div>
-      <div class="xp-grid">
-        <div>
-          <div class="skill-cat" style="margin-bottom:20px">experience</div>
-          <!-- EDIT: your real roles & dates -->
-          <div class="xp-item reveal">
-            <div class="xp-period">20XX — Present</div>
-            <div class="xp-role">HPC / GPU Computing Engineer</div>
-            <div class="xp-org"><a href="https://www.nhr.fau.de/" target="_blank" rel="noopener">NHR@FAU · Erlangen</a></div>
-            <ul>
-              <li>Porting and optimizing scientific simulation codes for GPU clusters</li>
-              <li>Building portable CUDA/HIP abstractions for cross-vendor performance</li>
-              <li>Supporting researchers with large-scale parallel workloads</li>
-            </ul>
-          </div>
-        </div>
-        <div>
-          <div class="skill-cat" style="margin-bottom:20px">education</div>
-          <!-- EDIT: your real degrees & dates -->
-          <div class="xp-item reveal">
-            <div class="xp-period">20XX — 20XX</div>
-            <div class="xp-role">[Degree, e.g. M.Sc. Computational Engineering]</div>
-            <div class="xp-org">[University]</div>
-            <ul>
-              <li>[Focus areas, thesis topic, notable coursework…]</li>
-            </ul>
-          </div>
-          <div class="xp-item reveal">
-            <div class="xp-period">20XX — 20XX</div>
-            <div class="xp-role">[Earlier degree]</div>
-            <div class="xp-org">[University]</div>
-            <ul>
-              <li>[Highlights…]</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ======= Contact ======= -->
-  <section id="contact">
-    <div class="container contact-wrap">
-      <div class="reveal">
-        <div class="sec-label"># contact</div>
-        <h2 class="sec-title">Get in touch</h2>
-        <p class="sec-sub contact-cta">
-          Want to chat about GPU computing, CFD on accelerators, or HPC in general?
-          My inbox is always open.
+      <div class="bio">
+        <h2>About</h2>
+        <p>
+          I work on <strong>high-performance scientific computing</strong> at
+          <a href="https://www.nhr.fau.de/" target="_blank" rel="noopener">NHR@FAU</a>
+          (National High-Performance Computing, Friedrich-Alexander-Universität Erlangen-Nürnberg),
+          helping researchers run simulation codes fast — and portably — on modern GPU hardware.
         </p>
-        <!-- EDIT: your real email address -->
-        <a class="contact-btn" href="mailto:your.email@example.com">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
-          Say hello
-        </a>
+        <p>
+          My work sits at the intersection of <strong>GPGPU programming and computational physics</strong>:
+          lattice Boltzmann and smoothed-particle hydrodynamics solvers, sparse iterative solvers,
+          multi-GPU benchmarking, and the parallel IO/tooling around large simulations. I care about
+          GPU code that doesn't get locked to one vendor — which is why I built a
+          CUDA/HIP abstraction runtime so the same C++ powers both ecosystems.
+        </p>
+
+        <h2 class="news-title">News</h2>
+        <table class="news">
+          <tr><td class="date">Oct 2026</td><td>Launched this website</td></tr>
+          <tr><td class="date">Aug 2026</td><td>New developments in <a href="https://github.com/SriramKatta/Multiphase_LBM" target="_blank" rel="noopener">Multiphase_LBM</a>, my multiphase lattice Boltzmann solver</td></tr>
+          <tr><td class="date">Jun 2026</td><td>Released <a href="https://github.com/SriramKatta/GCXX" target="_blank" rel="noopener">GCXX</a> — a backend-agnostic CUDA/HIP GPU runtime abstraction in modern C++</td></tr>
+          <tr><td class="date">Feb 2026</td><td><a href="https://github.com/SriramKatta/CG_Solver_GPU" target="_blank" rel="noopener">CG_Solver_GPU</a>: GPU-accelerated conjugate gradient solver for large sparse systems</td></tr>
+        </table>
       </div>
     </div>
-  </section>
 
-  <!-- ======= Footer ======= -->
+    <!-- ======= Projects ======= -->
+    <section id="projects">
+      <h2 class="sec-head">Projects <small>— straight from my GitHub</small></h2>
+      <div class="proj-grid">
+        <!-- EDIT: add / remove repos, set --dot to the language color -->
+        <div class="proj">
+          <div class="proj-top">
+            <a class="proj-name" href="https://github.com/SriramKatta/GCXX" target="_blank" rel="noopener">GCXX</a>
+            <span class="proj-lang" style="--dot:#f34b7d">C++</span>
+          </div>
+          <div class="proj-desc">Lightweight, backend-agnostic C++ GPU runtime abstraction with CUDA and HIP support — portable, high-performance GPU code through one interface.</div>
+        </div>
+        <div class="proj">
+          <div class="proj-top">
+            <a class="proj-name" href="https://github.com/SriramKatta/Multiphase_LBM" target="_blank" rel="noopener">Multiphase_LBM</a>
+            <span class="proj-lang" style="--dot:#3572A5">Python</span>
+          </div>
+          <div class="proj-desc">Multiphase lattice Boltzmann method solver for simulating interacting fluid phases — mesoscopic CFD on modern hardware.</div>
+        </div>
+        <div class="proj">
+          <div class="proj-top">
+            <a class="proj-name" href="https://github.com/SriramKatta/CG_Solver_GPU" target="_blank" rel="noopener">CG_Solver_GPU</a>
+            <span class="proj-lang" style="--dot:#3A4E3A">CUDA</span>
+          </div>
+          <div class="proj-desc">GPU-accelerated conjugate gradient solver for large, sparse linear systems — the workhorse behind implicit simulations.</div>
+        </div>
+        <div class="proj">
+          <div class="proj-top">
+            <a class="proj-name" href="https://github.com/SriramKatta/Multi_GPU_benchmarks" target="_blank" rel="noopener">Multi_GPU_benchmarks</a>
+            <span class="proj-lang" style="--dot:#3A4E3A">CUDA</span>
+          </div>
+          <div class="proj-desc">Benchmarking suite for multi-GPU systems — scaling, bandwidth, and kernel performance across devices.</div>
+        </div>
+        <div class="proj">
+          <div class="proj-top">
+            <a class="proj-name" href="https://github.com/SriramKatta/SPH_CUDA_BASIC" target="_blank" rel="noopener">SPH_CUDA_BASIC</a>
+            <span class="proj-lang" style="--dot:#3A4E3A">CUDA</span>
+          </div>
+          <div class="proj-desc">Smoothed-particle hydrodynamics on the GPU — meshfree, particle-based fluid simulation in CUDA.</div>
+        </div>
+        <div class="proj">
+          <div class="proj-top">
+            <a class="proj-name" href="https://github.com/SriramKatta/Partcile_simulation_CUDA" target="_blank" rel="noopener">Partcile_simulation_CUDA</a>
+            <span class="proj-lang" style="--dot:#f34b7d">C++</span>
+          </div>
+          <div class="proj-desc">General-purpose GPU particle simulation — the N-body playground that started it all.</div>
+        </div>
+        <div class="proj">
+          <div class="proj-top">
+            <a class="proj-name" href="https://github.com/SriramKatta/Steadystate-Heat-transfer" target="_blank" rel="noopener">Steadystate-Heat-transfer</a>
+            <span class="proj-lang" style="--dot:#f34b7d">C++</span>
+          </div>
+          <div class="proj-desc">Steady-state heat conduction solver — classical numerical methods for thermal problems.</div>
+        </div>
+        <div class="proj">
+          <div class="proj-top">
+            <a class="proj-name" href="https://github.com/SriramKatta/cosmoHDF5" target="_blank" rel="noopener">cosmoHDF5</a>
+            <span class="proj-lang" style="--dot:#f34b7d">C++</span>
+          </div>
+          <div class="proj-desc">HDF5 tooling for cosmological simulation data — efficient storage and analysis of large datasets.</div>
+        </div>
+        <div class="proj">
+          <div class="proj-top">
+            <a class="proj-name" href="https://github.com/SriramKatta/mmio-mpi-reader" target="_blank" rel="noopener">mmio-mpi-reader</a>
+            <span class="proj-lang" style="--dot:#aaa">C</span>
+          </div>
+          <div class="proj-desc">Distributed Matrix Market file reader in C with MPI — parallel IO for sparse matrices.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= CV ======= -->
+    <section id="cv">
+      <h2 class="sec-head">CV</h2>
+      <div class="cv-grid">
+        <div class="cv-col">
+          <h3>Experience</h3>
+          <!-- EDIT: your real roles & dates -->
+          <div class="cv-item">
+            <div class="period">20XX — Present</div>
+            <div class="what">HPC / GPU Computing Engineer</div>
+            <div class="where"><a href="https://www.nhr.fau.de/" target="_blank" rel="noopener">NHR@FAU</a> · Erlangen, Germany</div>
+          </div>
+        </div>
+        <div class="cv-col">
+          <h3>Education</h3>
+          <!-- EDIT: your real degrees & dates -->
+          <div class="cv-item">
+            <div class="period">20XX — 20XX</div>
+            <div class="what">M.Sc. Computational Engineering</div>
+            <div class="where">Friedrich-Alexander-Universität Erlangen-Nürnberg</div>
+          </div>
+          <div class="cv-item">
+            <div class="period">20XX — 20XX</div>
+            <div class="what">B.Tech.</div>
+            <div class="where">[University]</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
   <footer>
     <div class="container footer-inner">
       <span>© <span id="year">2026</span> Sriram Katta</span>
-      <span>plain HTML · no frameworks · deployed with <span style="color:var(--accent)">git push</span></span>
+      <span><a href="https://github.com/SriramKatta/SriramKatta.github.io" target="_blank" rel="noopener">source</a></span>
     </div>
   </footer>
 
   <script>
-    // ---------- Theme toggle ----------
-    var themeBtn = document.getElementById('themeBtn');
-    themeBtn.addEventListener('click', function () {
+    // Theme toggle
+    document.getElementById('themeBtn').addEventListener('click', function () {
       var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
       document.documentElement.dataset.theme = next;
       localStorage.setItem('theme', next);
     });
-
-    // ---------- Mobile nav ----------
-    var menuBtn = document.getElementById('menuBtn');
-    var navLinks = document.getElementById('navLinks');
-    menuBtn.addEventListener('click', function () { navLinks.classList.toggle('open'); });
-    navLinks.addEventListener('click', function (e) {
-      if (e.target.tagName === 'A') navLinks.classList.remove('open');
-    });
-
-    // ---------- Footer year ----------
+    // Footer year
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    var reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // ---------- Typing tagline ----------
-    (function () {
-      var el = document.getElementById('typed');
-      var roles = ['GPU computing engineer', 'CUDA & HIP kernel developer', 'CFD on accelerators', 'sparse linear algebra on GPUs', 'HPC enthusiast'];
-      if (reducedMotion) { el.textContent = roles[0]; return; }
-      var ri = 0, ci = 0, deleting = false;
-      (function tick() {
-        var word = roles[ri];
-        el.textContent = word.slice(0, ci);
-        if (!deleting && ci < word.length) { ci++; setTimeout(tick, 55); }
-        else if (!deleting) { deleting = true; setTimeout(tick, 1800); }
-        else if (ci > 0) { ci--; setTimeout(tick, 28); }
-        else { deleting = false; ri = (ri + 1) % roles.length; setTimeout(tick, 350); }
-      })();
-    })();
-
-    // ---------- Scroll reveal ----------
-    (function () {
-      var els = document.querySelectorAll('.reveal');
-      if (reducedMotion || !('IntersectionObserver' in window)) {
-        els.forEach(function (e) { e.classList.add('visible'); });
-        return;
-      }
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (en) {
-          if (en.isIntersecting) { en.target.classList.add('visible'); io.unobserve(en.target); }
-        });
-      }, { threshold: 0.12 });
-      els.forEach(function (e) { io.observe(e); });
-    })();
   </script>
 </body>
 </html>
